@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook API Test Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #166fe5;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: red;
+            border-left: 3px solid red;
+            padding: 10px;
+            background-color: #ffe6e6;
+        }
+        .success {
+            color: green;
+            border-left: 3px solid green;
+            padding: 10px;
+            background-color: #e6ffe6;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .endpoint {
+            background-color: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        h2 {
+            color: #1877f2;
+            margin-top: 0;
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📱 Facebook API Test Tool</h2>
+        <p>This tool fetches data from your local proxy server which calls Facebook's Graph API</p>
+        
+        <div class="endpoint">
+            <strong>🖥️ Server Endpoint:</strong> http://localhost:3000/facebook-data
+        </div>
+        
+        <div>
+            <button onclick="fetchFacebookData()">📊 Get Facebook User Data</button>
+            <button onclick="fetchTestData()">🔧 Test Server Connection</button>
+            <button onclick="clearOutput()">🗑️ Clear Output</button>
+        </div>
+        
+        <hr>
+        
+        <h3>📋 Response Output:</h3>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Function to fetch Facebook data through your proxy server
+        function fetchFacebookData() {
+            const outputDiv = document.getElementById('output');
+            
+            // Show loading state
+            outputDiv.innerHTML = '<div class="loading">⏳ Fetching data from Facebook via proxy server...</div>';
+            
+            fetch("http://localhost:3000/facebook-data")
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    // Display successful response
+                    outputDiv.innerHTML = `
+                        <div class="success">✅ Successfully fetched data from Facebook!</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Log to console for debugging
+                    console.log("Facebook Data:", data);
+                    
+                    // If you want to display specific fields
+                    if (data.data) {
+                        console.log("User ID:", data.data.id);
+                        console.log("User Name:", data.data.name);
+                    }
+                })
+                .catch(err => {
+                    // Display error
+                    outputDiv.innerHTML = `
+                        <div class="error">
+                            ❌ Error: ${err.message}<br><br>
+                            <strong>Possible issues:</strong><br>
+                            • Is your Node.js server running? (Run: node server.js)<br>
+                            • Is the server on port 3000?<br>
+                            • Check server console for errors<br>
+                            • Make sure Facebook token is valid
+                        </div>
+                    `;
+                    console.error("Fetch error:", err);
+                });
+        }
+        
+        // Test function to verify server is working (uses your original /data endpoint)
+        function fetchTestData() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '<div class="loading">⏳ Testing server connection...</div>';
+            
+            fetch("http://localhost:3000/data")
+                .then(res => res.json())
+                .then(data => {
+                    outputDiv.innerHTML = `
+                        <div class="success">✅ Server connection successful!</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    console.log("Test data:", data);
+                })
+                .catch(err => {
+                    outputDiv.innerHTML = `
+                        <div class="error">
+                            ❌ Cannot connect to server: ${err.message}<br><br>
+                            <strong>Make sure your Node.js server is running:</strong><br>
+                            node server.js
+                        </div>
+                    `;
+                    console.error("Test error:", err);
+                });
+        }
+        
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '<em>Output cleared. Click a button to fetch data.</em>';
+        }
+        
+        // Optional: Auto-test connection when page loads
+        window.addEventListener('load', () => {
+            clearOutput();
+            console.log("UI ready! Make sure server is running on http://localhost:3000");
+        });
+    </script>
+</body>
+</html>
