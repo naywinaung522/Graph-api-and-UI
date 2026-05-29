@@ -13,12 +13,12 @@ app.use((req, res, next) => {
 // Endpoint that calls Facebook API (NEW)
 app.get('/facebook-data', async (req, res) => {
     // IMPORTANT: Replace with your own token! Don't share this token!
-    const accessToken = "EAAUjd5YjqKgBRm7Li76hG1BWMqVnkUFEGwDO3iXARKPTnFyiuGU8GvHVkpZBmU6gVK5iL4OmCZBdfpVquuZB3UmZBZBf19T02YD6F69az4WgMl2TlArnPSlJh6yhK9Xw5PSv7AWEONuhjge1r8B9UizVJLOMWP6ZC5nhWNbIeDePHuT3XFQTTaHzZAhoYpOVJkwTRbtAqNUbZB795xCF6oDRfZBG5eVYT7FLgPhbw9gziiwZDZD";
+    const accessToken = "EAAUjd5YjqKgBRpCOZCoCD37TlvecO8WXUhDpt0vWZAUMwTFJF3ZB0gcG9mzQ9Jh4aPAiL2qxZBCwa0z1uI8fj67GB1xTAZAOiiuTnjkXO0GjUReMFF3ZBHyMQ2YcBZB6pevIY6ZCqKcHQgwZAqdEKSc2R7nuZBnDWd9oULyTSz6yL0PbscMrdAQ5M0wQL6bTBAV51fiRuVxjpuzPdObhNwQF8WNudQZBlO2JjetFkXXwcZAFfYvGIGrTXaZB1WZCsI3UzsYqWSn4ZBX6ZCoWjegc4k3Igre5q3Ocw9TsTVO5V5EZD";
     
     console.log("📡 Proxying request to Facebook API...");
     
     try {
-        const fbResponse = await fetch(`https://graph.facebook.com/v25.0/105210808833197/feed?access_token=${accessToken}&limit=3`);
+        const fbResponse = await fetch(`https://graph.facebook.com/v25.0/me/accounts?access_token=${accessToken}`);
         const fbData = await fbResponse.json();
         
         console.log("✅ Facebook API response received");
